@@ -5,6 +5,7 @@ import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import taskRoutes from "./routes/taskRoutes";
+import analyticsRoutes from "./routes/analyticsRoutes";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/tasks", taskRoutes);
+app.use("/analytics", analyticsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Running...");
