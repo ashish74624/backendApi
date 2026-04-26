@@ -1,42 +1,49 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import User from "../models/User";
 
-interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
     user?: any;
 }
 
-export const protect = (
+export const protect = async (
     req: CustomRequest,
     res: Response,
     next: NextFunction
 ) => {
-    let token;
+    try {
+        let token;
 
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith("Bearer")
-    ) {
-        token = req.headers.authorization.split(" ")[1];
+        if (
+            req.headers.authorization &&
+            req.headers.authorization.startsWith("Bearer")
+        ) {
+            token = req.headers.authorization.split(" ")[1];
 
-        try {
-            const decoded = jwt.verify(
+            const decoded: any = jwt.verify(
                 token,
                 process.env.JWT_SECRET as string
             );
 
-            req.user = decoded;
-            next();
+            const user = await User.findById(decoded.id).select("-password");
 
-        } catch (error) {
-            return res.status(401).json({
-                message: "Invalid token"
-            });
+            if (!user) {
+                return res.status(401).json({
+                    message: "User not found"
+                });
+            }
+
+            req.user = user;
+            return next();
         }
-    }
 
-    if (!token) {
         return res.status(401).json({
             message: "No token provided"
+        });
+
+    } catch (error) {
+        return res.status(401).json({
+            message: "Unauthorized"
         });
     }
 };
