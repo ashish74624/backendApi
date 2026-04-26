@@ -6,6 +6,10 @@ import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import analyticsRoutes from "./routes/analyticsRoutes";
+import {
+  notFound,
+  errorHandler
+} from "./middleware/errorMiddleware";
 
 const app = express();
 
@@ -24,6 +28,8 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/tasks", taskRoutes);
 app.use("/analytics", analyticsRoutes);
+app.use(notFound);
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
   res.send("API Running...");
