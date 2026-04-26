@@ -2,9 +2,9 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
-
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
+import taskRoutes from "./routes/taskRoutes";
 
 const app = express();
 
@@ -21,6 +21,7 @@ app.use(
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/tasks", taskRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Running...");
